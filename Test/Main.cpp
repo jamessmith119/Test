@@ -22,10 +22,16 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previousInstance, LPSTR cmdLine
 	if(FAILED(graphicsEngine.InitializeDevice(g_hWnd)))
 	{
 		MessageBox(NULL, L"Direct3D Initialization Failed", L"Error", MB_ICONERROR);
+		return 0;
 	}
 	
 	SimpleTriangleMesh triangle(graphicsEngine.GetGraphicsDevice());
-	
+	if(FAILED(triangle.Initialize()))
+	{
+		MessageBox(NULL, L"Could not create the triangle mesh.", L"Error", MB_ICONERROR);
+		return 0;
+	}
+
 	// Main message loop
     MSG msg = {0};
     while( WM_QUIT != msg.message )

@@ -1,56 +1,10 @@
 #include "SimpleTriangleMesh.h"
 
-SimpleTriangleMesh::SimpleTriangleMesh(ID3D11Device * device)
+SimpleTriangleMesh::SimpleTriangleMesh(ID3D11Device * graphicsDevice)
 {
-	D3D11_BUFFER_DESC bufferDescription;
-	D3D11_SUBRESOURCE_DATA bufferSubData;
-
-	ZeroMemory(&bufferDescription, sizeof(bufferDescription));
-	ZeroMemory(&bufferSubData, sizeof(bufferSubData));
-
-	//Building vertex and index info.
-	PNTVertex vertices[] =
-	{
-		DirectX::XMFLOAT3( 0.0f, 0.5f, 0.5f ), DirectX::XMFLOAT3( 1.0f, 1.0f, 1.0f ), DirectX::XMFLOAT3( 1.0f, 1.0f, 1.0f ),
-		DirectX::XMFLOAT3( 0.5f, -0.5f, 0.5f ), DirectX::XMFLOAT3( 1.0f, 1.0f, 1.0f ), DirectX::XMFLOAT3( 1.0f, 1.0f, 1.0f ),
-		DirectX::XMFLOAT3( -0.5f, -0.5f, 0.5f ), DirectX::XMFLOAT3( 1.0f, 1.0f, 1.0f ), DirectX::XMFLOAT3( 1.0f, 1.0f, 1.0f )
-	};
-
-	WORD triangleIndices[] =
-	{
-		0, 1, 2
-	};
-
+	device = graphicsDevice;
 	vertexCount = 3;
-	indexCount = sizeof(triangleIndices);
-
-	//Fill in the vertex buffer description.
-	bufferDescription.Usage = D3D11_USAGE_DEFAULT;
-	bufferDescription.ByteWidth = sizeof(PNTVertex) * vertexCount;
-	bufferDescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDescription.CPUAccessFlags = 0;
-	bufferDescription.MiscFlags = 0;
-
-	//Fill in the vertex subresource data.
-	bufferSubData.pSysMem = vertices;
-	bufferSubData.SysMemPitch = 0;
-	bufferSubData.SysMemSlicePitch = 0;
-
-	device->CreateBuffer(&bufferDescription, &bufferSubData, &vertexBuffer);
-
-	//Fill in the index buffer description.
-	bufferDescription.Usage = D3D11_USAGE_DEFAULT;
-	bufferDescription.ByteWidth = sizeof(WORD) * indexCount;
-	bufferDescription.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	bufferDescription.CPUAccessFlags = 0;
-	bufferDescription.MiscFlags = 0;
-
-	//Fill in the index subresource data.
-	bufferSubData.pSysMem = triangleIndices;
-	bufferSubData.SysMemPitch = 0;
-	bufferSubData.SysMemSlicePitch = 0;
-
-	device->CreateBuffer(&bufferDescription, &bufferSubData, &indexBuffer);
+	indexCount = sizeof(triangleIndices);	
 
 	ID3DBlob * vBlob = nullptr;
 	ID3DBlob * errorBlob = nullptr;
@@ -82,6 +36,23 @@ SimpleTriangleMesh::SimpleTriangleMesh(ID3D11Device * device)
 	hr = device->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pixelShader );	
 }
 
+HRESULT SimpleTriangleMesh::Initialize()
+{
+	HRESULT result = S_OK;
+
+	if(FAILED(CreateVertexBuffer()))
+	{
+		return E_FAIL;
+	}
+
+	if(FAILED(CreateIndexBuffer()))
+	{
+		return E_FAIL;
+	}
+
+	return result;
+}
+
 void SimpleTriangleMesh::Render(ID3D11DeviceContext * context)
 {
 	context->IASetInputLayout(vertexLayout);
@@ -89,4 +60,46 @@ void SimpleTriangleMesh::Render(ID3D11DeviceContext * context)
 	context->PSSetShader(pixelShader, nullptr, 0);
 
 	BaseMesh::Render(context);
+}
+
+HRESULT SimpleTriangleMesh::CreateVertexBuffer()
+{
+	HRESULT result;
+
+	//Fill in the vertex buffer description.
+	bufferDescription.Usage = D3D11_USAGE_DEFAULT;
+	bufferDescription.ByteWidth = sizeof(PNTVertex) * vertexCount;
+	bufferDescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDescription.CPUAccessFlags = 0;
+	bufferDescription.MiscFlags = 0;
+
+	//Fill in the vertex subresource data.
+	bufferSubData.pSysMem = vertices;
+	bufferSubData.SysMemPitch = 0;
+	bufferSubData.SysMemSlicePitch = 0;
+
+	result = device->CreateBuffer(&bufferDescription, &bufferSubData, &vertexBuffer);
+
+	return result;
+}
+
+HRESULT SimpleTriangleMesh::CreateIndexBuffer()
+{
+	HRESULT result;
+
+	//Fill in the index buffer description.
+	bufferDescription.Usage = D3D11_USAGE_DEFAULT;
+	bufferDescription.ByteWidth = sizeof(WORD) * indexCount;
+	bufferDescription.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	bufferDescription.CPUAccessFlags = 0;
+	bufferDescription.MiscFlags = 0;
+
+	//Fill in the index subresource data.
+	bufferSubData.pSysMem = triangleIndices;
+	bufferSubData.SysMemPitch = 0;
+	bufferSubData.SysMemSlicePitch = 0;
+
+	result = device->CreateBuffer(&bufferDescription, &bufferSubData, &indexBuffer);
+
+	return result;
 }
