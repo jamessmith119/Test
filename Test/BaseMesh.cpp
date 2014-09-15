@@ -2,6 +2,9 @@
 
 BaseMesh::BaseMesh()
 {
+	ZeroMemory(&bufferDescription, sizeof(bufferDescription));
+	ZeroMemory(&bufferSubData, sizeof(bufferSubData));
+
 	vertexCount = 0;
 	indexCount = 0;
 }
