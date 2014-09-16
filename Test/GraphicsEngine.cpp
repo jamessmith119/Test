@@ -94,6 +94,11 @@ void GraphicsEngine::CleanupDevice()
 	{
 		renderTargetView->Release();
 	}
+
+	if(adapter)
+	{
+		adapter->Release();
+	}
 	
     if(swapChain)
 	{
@@ -120,6 +125,27 @@ ID3D11Device * GraphicsEngine::GetGraphicsDevice()
 ID3D11DeviceContext * GraphicsEngine::GetGraphicsDeviceContext()
 {
 	return deviceContext;
+}
+
+IDXGIAdapter * GraphicsEngine::GetDefaultGraphicsAdapter()
+{
+	IDXGIFactory * factory;
+	if(FAILED(CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory)))
+	{
+		return nullptr;
+	}
+
+	for(int i = 0; factory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND; ++i)
+    {
+         
+    }
+
+	if(factory)
+	{
+		factory->Release();
+	}
+
+	return adapter;
 }
 
 //Private methods section

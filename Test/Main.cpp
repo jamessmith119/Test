@@ -24,6 +24,8 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previousInstance, LPSTR cmdLine
 		MessageBox(NULL, L"Direct3D Initialization Failed", L"Error", MB_ICONERROR);
 		return 0;
 	}
+
+	graphicsEngine.GetDefaultGraphicsAdapter();
 	
 	SimpleTriangleMesh triangle(graphicsEngine.GetGraphicsDevice());
 	if(FAILED(triangle.Initialize()))

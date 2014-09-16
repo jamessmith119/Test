@@ -16,6 +16,7 @@ class GraphicsEngine
 		ID3D11RenderTargetView * renderTargetView;
 		ID3D11Texture2D * backBuffer;
 		D3D_FEATURE_LEVEL featureLevelsSupported;
+		IDXGIAdapter * adapter; 
 
 		void CreateViewport();
 	public:
@@ -29,6 +30,7 @@ class GraphicsEngine
 		//Properties or getters/setters
 		ID3D11Device * GetGraphicsDevice();
 		ID3D11DeviceContext * GetGraphicsDeviceContext();
+		IDXGIAdapter * GetDefaultGraphicsAdapter();
 };
 
 #endif
