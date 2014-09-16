@@ -65,3 +65,15 @@ Test/Debug/link.read.1.tlog
 *.tlog
 Test/Debug/vc110.pdb
 Test/Debug/Camera.obj
+Release/STPixelShader.cso
+Release/STVertexShader.cso
+Release/Test.exe
+Release/Test.pdb
+Test/Release/BaseMesh.obj
+Test/Release/Camera.obj
+Test/Release/GraphicsEngine.obj
+Test/Release/Main.obj
+Test/Release/SimpleTriangleMesh.obj
+Test/Release/Test.lastbuildstate
+Test/Release/Test.log
+Test/Release/vc110.pdb
