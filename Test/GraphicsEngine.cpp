@@ -70,7 +70,7 @@ HRESULT GraphicsEngine::InitializeDevice(HWND window)
 
 void GraphicsEngine::ClearScene()
 {
-	deviceContext->ClearRenderTargetView(renderTargetView, DirectX::Colors::MidnightBlue);
+	deviceContext->ClearRenderTargetView(renderTargetView, DirectX::Colors::Black);
 }
 
 void GraphicsEngine::Render()
