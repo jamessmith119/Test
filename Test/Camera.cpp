@@ -13,10 +13,7 @@ void Camera::SetView(DirectX::XMFLOAT3 eye, DirectX::XMFLOAT3 lookAt, DirectX::X
 	upDirection = up;
 
 	// Calculate the view matrix.
-    DirectX::XMMATRIX view = 
-		DirectX::XMMatrixLookAtLH(DirectX::XMLoadFloat3(&eyeDirection), 
-		DirectX::XMLoadFloat3(&lookAtDirection), DirectX::XMLoadFloat3(&upDirection));
-
+    DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(DirectX::XMLoadFloat3(&eyeDirection), DirectX::XMLoadFloat3(&lookAtDirection), DirectX::XMLoadFloat3(&upDirection));
 	DirectX::XMVECTOR det;
     DirectX::XMMATRIX inverseView = XMMatrixInverse(&det, view);
     DirectX::XMStoreFloat4x4(&viewMatrix, view);
@@ -36,6 +33,12 @@ void Camera::SetView(DirectX::XMFLOAT3 eye, DirectX::XMFLOAT3 lookAt, DirectX::X
 
 void Camera::SetProjection(float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
 {
+	// Set attributes for the projection matrix. 
+    cameraFieldOfView = fieldOfView; 
+    cameraAspectRatio = aspectRatio; 
+    cameraNearPlane = nearPlane; 
+    cameraFarPlane = farPlane; 
+    DirectX::XMStoreFloat4x4(&projectionMatrix, DirectX::XMMatrixPerspectiveFovLH(cameraFieldOfView, cameraAspectRatio, cameraNearPlane, cameraFarPlane)); 
 
 }
 

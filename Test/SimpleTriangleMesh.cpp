@@ -73,6 +73,11 @@ void SimpleTriangleMesh::Render(ID3D11DeviceContext * context)
 HRESULT SimpleTriangleMesh::CreateVertexBuffer()
 {
 	HRESULT result;
+	D3D11_BUFFER_DESC bufferDescription;
+	D3D11_SUBRESOURCE_DATA bufferSubData;
+
+	ZeroMemory(&bufferDescription, sizeof(bufferDescription));
+	ZeroMemory(&bufferSubData, sizeof(bufferSubData));
 
 	//Fill in the vertex buffer description.
 	bufferDescription.Usage = D3D11_USAGE_DEFAULT;
@@ -93,7 +98,12 @@ HRESULT SimpleTriangleMesh::CreateVertexBuffer()
 
 HRESULT SimpleTriangleMesh::CreateIndexBuffer()
 {
-	HRESULT result;
+	HRESULT result;	
+	D3D11_BUFFER_DESC bufferDescription;
+	D3D11_SUBRESOURCE_DATA bufferSubData;
+
+	ZeroMemory(&bufferDescription, sizeof(bufferDescription));
+	ZeroMemory(&bufferSubData, sizeof(bufferSubData));
 
 	//Fill in the index buffer description.
 	bufferDescription.Usage = D3D11_USAGE_DEFAULT;

@@ -23,8 +23,6 @@ class BaseMesh
 	protected:
 		ID3D11Buffer * vertexBuffer;
 		ID3D11Buffer * indexBuffer;
-		D3D11_BUFFER_DESC bufferDescription;
-		D3D11_SUBRESOURCE_DATA bufferSubData;
 		int vertexCount;
 		int indexCount;
 

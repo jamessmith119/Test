@@ -14,10 +14,10 @@ class Camera
 		DirectX::XMFLOAT3 upDirection;
 		float cameraYawAngle;
 		float cameraPitchAngle;
-		float fieldofView;
-		float aspectRatio;
-		float nearPlane;
-		float farPlane;
+		float cameraFieldOfView;
+		float cameraAspectRatio;
+		float cameraNearPlane;
+		float cameraFarPlane;
 
 	public:
 		Camera();
