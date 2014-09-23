@@ -16,7 +16,7 @@ GraphicsEngine::GraphicsEngine()
 
 GraphicsEngine::~GraphicsEngine()
 {
-	CleanupDevice();
+	Shutdown();
 }
 
 HRESULT GraphicsEngine::InitializeDevice(HWND window)
@@ -37,7 +37,11 @@ HRESULT GraphicsEngine::InitializeDevice(HWND window)
 	swapChainDescription.Windowed = TRUE;
 
 	//Try to create the device and swap chain using Direct3D 11.1 features.
-	hr = D3D11CreateDeviceAndSwapChain( nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevels, _countof(featureLevels), D3D11_SDK_VERSION, &swapChainDescription, &swapChain, &device, &featureLevelsSupported, &deviceContext);	
+	if(FAILED(hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevels, 
+		_countof(featureLevels), D3D11_SDK_VERSION, &swapChainDescription, &swapChain, &device, &featureLevelsSupported, &deviceContext)))
+	{
+		return E_FAIL;
+	}
 
 	if (hr == E_INVALIDARG)
 	{
@@ -47,7 +51,11 @@ HRESULT GraphicsEngine::InitializeDevice(HWND window)
 			createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 		#endif
 
-		hr = D3D11CreateDeviceAndSwapChain( nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags, &featureLevels[1], _countof(featureLevels) - 1, D3D11_SDK_VERSION, &swapChainDescription, &swapChain, &device, &featureLevelsSupported, &deviceContext);
+		if(FAILED(hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags, &featureLevels[1], 
+			_countof(featureLevels) - 1, D3D11_SDK_VERSION, &swapChainDescription, &swapChain, &device, &featureLevelsSupported, &deviceContext)))
+		{
+			return E_FAIL;
+		}
 	}
 
 	//Get a pointer to the backbuffer
@@ -78,41 +86,48 @@ void GraphicsEngine::Render()
     swapChain->Present(0, 0);
 }
 
-void GraphicsEngine::CleanupDevice()
+void GraphicsEngine::Shutdown()
 {
 	if(deviceContext)
 	{
-		deviceContext->ClearState();
+		deviceContext->Release();
+		deviceContext = 0;
 	}
 
 	if(backBuffer)
 	{
 		backBuffer->Release();
+		backBuffer = 0;
 	}
 
     if(renderTargetView)
 	{
 		renderTargetView->Release();
+		renderTargetView = 0;
 	}
 
 	if(adapter)
 	{
 		adapter->Release();
+		adapter = 0;
 	}
 	
     if(swapChain)
 	{
 		swapChain->Release();
+		swapChain = 0;
 	}
 
     if(deviceContext)
 	{
 		deviceContext->Release();
+		deviceContext = 0;
 	}
 
     if(device)
 	{
 		device->Release();
+		device = 0;
 	}
 }
 

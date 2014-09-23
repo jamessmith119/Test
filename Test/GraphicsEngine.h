@@ -23,7 +23,7 @@ class GraphicsEngine
 		GraphicsEngine();
 		~GraphicsEngine();
 		HRESULT InitializeDevice(HWND);
-		void CleanupDevice();
+		void Shutdown();
 		void ClearScene();
 		void Render();		
 

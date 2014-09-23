@@ -8,8 +8,19 @@ PNTVertex vertices[] =
 	DirectX::XMFLOAT3( -0.5f, -0.5f, 0.5f ), DirectX::XMFLOAT3( 1.0f, 1.0f, 1.0f ), DirectX::XMFLOAT3( 1.0f, 1.0f, 1.0f )
 };
 
+SimpleTriangleMesh::SimpleTriangleMesh()
+{
+}
+
 SimpleTriangleMesh::SimpleTriangleMesh(ID3D11Device * graphicsDevice)
 {
+	Initialize(graphicsDevice);
+}
+
+HRESULT SimpleTriangleMesh::Initialize(ID3D11Device * graphicsDevice)
+{
+	HRESULT result = S_OK;
+
 	device = graphicsDevice;
 	vertexCount = 3;
 	indexCount = sizeof(triangleIndices);	
@@ -29,24 +40,31 @@ SimpleTriangleMesh::SimpleTriangleMesh(ID3D11Device * graphicsDevice)
 		dwShaderFlags |= D3DCOMPILE_SKIP_OPTIMIZATION;
 	#endif
 
-	HRESULT hr = D3DCompileFromFile(L"SimpleTriangle.fx", nullptr, nullptr, "VS", "vs_4_0", dwShaderFlags, 0, &vBlob, &errorBlob);
-	hr = device->CreateVertexShader(vBlob->GetBufferPointer(), vBlob->GetBufferSize(), nullptr, &vertexShader);
+	result = D3DCompileFromFile(L"SimpleTriangle.fx", nullptr, nullptr, "VS", "vs_4_0", dwShaderFlags, 0, &vBlob, &errorBlob);
+	if(FAILED(result = device->CreateVertexShader(vBlob->GetBufferPointer(), vBlob->GetBufferSize(), nullptr, &vertexShader)))
+	{
+		return E_FAIL;
+	}
 
 	UINT layout = ARRAYSIZE(PNTVertexLayout);
 
 	// Create the input layout
-	hr = device->CreateInputLayout(PNTVertexLayout, layout, vBlob->GetBufferPointer(), vBlob->GetBufferSize(), &vertexLayout);
+	if(FAILED(result = device->CreateInputLayout(PNTVertexLayout, layout, vBlob->GetBufferPointer(), vBlob->GetBufferSize(), &vertexLayout)))
+	{
+		return E_FAIL;
+	}
 
 	ID3DBlob * pBlob = nullptr;
-	hr = D3DCompileFromFile(L"SimpleTriangle.fx", nullptr, nullptr, "PS", "ps_4_0", dwShaderFlags, 0, &pBlob, &errorBlob);
+	if(FAILED(result = D3DCompileFromFile(L"SimpleTriangle.fx", nullptr, nullptr, "PS", "ps_4_0", dwShaderFlags, 0, &pBlob, &errorBlob)))
+	{
+		return E_FAIL;
+	}
 
 	// Create the pixel shader
-	hr = device->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pixelShader );	
-}
-
-HRESULT SimpleTriangleMesh::Initialize()
-{
-	HRESULT result = S_OK;
+	if(FAILED(result = device->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pixelShader )))
+	{
+		return E_FAIL;
+	}
 
 	if(FAILED(CreateVertexBuffer()))
 	{

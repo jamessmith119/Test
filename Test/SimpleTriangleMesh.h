@@ -19,9 +19,10 @@ class SimpleTriangleMesh : public BaseMesh
 		HRESULT CreateVertexBuffer();
 		HRESULT CreateIndexBuffer();
 	public:
+		SimpleTriangleMesh();
 		SimpleTriangleMesh(ID3D11Device *);
 		virtual void Render(ID3D11DeviceContext *);
-		HRESULT Initialize();
+		HRESULT Initialize(ID3D11Device *);
 };
 
 #endif
