@@ -3,11 +3,6 @@
 
 #include "BaseMesh.h"
 
-const WORD triangleIndices[] =
-{
-	0, 1, 2
-};
-
 class SimpleTriangleMesh : public BaseMesh
 {
 	private:
@@ -21,8 +16,11 @@ class SimpleTriangleMesh : public BaseMesh
 	public:
 		SimpleTriangleMesh();
 		SimpleTriangleMesh(ID3D11Device *);
-		virtual void Render(ID3D11DeviceContext *);
 		HRESULT Initialize(ID3D11Device *);
+
+		ID3D11VertexShader * GetVertexShader();
+		ID3D11InputLayout * GetVertexLayout();
+		ID3D11PixelShader * GetPixelShader();
 };
 
 #endif

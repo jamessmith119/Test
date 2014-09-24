@@ -1,8 +1,10 @@
 #ifndef __GAMEHEADER__
 #define __GAMEHEADER__
 
+#include <vector>
 #include "GraphicsEngine.h"
 #include "Camera.h"
+#include "SimpleTriangle.h"
 #include "SimpleTriangleMesh.h"
 
 class Game
@@ -14,6 +16,8 @@ class Game
 		HWND mainGameWindow;
 		GraphicsEngine graphicsEngine;
 		Camera camera;
+
+		std::vector<BaseObject *> gameObjects;
 
 	public:
 

@@ -1,26 +1,26 @@
-#include "SimpleTriangleMesh.h"
+#include "CubeMesh.h"
 
-WORD triangleIndices[] =
+WORD cubeIndices[] =
 {
 	0, 1, 2
 };
 
-SimpleTriangleMesh::SimpleTriangleMesh()
+CubeMesh::CubeMesh()
 {
 }
 
-SimpleTriangleMesh::SimpleTriangleMesh(ID3D11Device * graphicsDevice)
+CubeMesh::CubeMesh(ID3D11Device * graphicsDevice)
 {
 	Initialize(graphicsDevice);
 }
 
-HRESULT SimpleTriangleMesh::Initialize(ID3D11Device * graphicsDevice)
+HRESULT CubeMesh::Initialize(ID3D11Device * graphicsDevice)
 {
 	HRESULT result = S_OK;
 
 	device = graphicsDevice;
 	vertexCount = 3;
-	indexCount = sizeof(triangleIndices);	
+	indexCount = sizeof(cubeIndices);	
 
 	ID3DBlob * vBlob = nullptr;
 	ID3DBlob * errorBlob = nullptr;
@@ -76,7 +76,18 @@ HRESULT SimpleTriangleMesh::Initialize(ID3D11Device * graphicsDevice)
 	return result;
 }
 
-HRESULT SimpleTriangleMesh::CreateVertexBuffer()
+void CubeMesh::Render(ID3D11DeviceContext * context)
+{
+	context->IASetInputLayout(vertexLayout);
+
+	//Shaders should be set on Material object.
+	context->VSSetShader(vertexShader, nullptr, 0);
+	context->PSSetShader(pixelShader, nullptr, 0);
+
+	BaseMesh::Render(context);
+}
+
+HRESULT CubeMesh::CreateVertexBuffer()
 {
 	HRESULT result;
 	D3D11_BUFFER_DESC bufferDescription;
@@ -102,7 +113,7 @@ HRESULT SimpleTriangleMesh::CreateVertexBuffer()
 	return result;
 }
 
-HRESULT SimpleTriangleMesh::CreateIndexBuffer()
+HRESULT CubeMesh::CreateIndexBuffer()
 {
 	HRESULT result;	
 	D3D11_BUFFER_DESC bufferDescription;
@@ -119,26 +130,11 @@ HRESULT SimpleTriangleMesh::CreateIndexBuffer()
 	bufferDescription.MiscFlags = 0;
 
 	//Fill in the index subresource data.
-	bufferSubData.pSysMem = triangleIndices;
+	bufferSubData.pSysMem = cubeIndices;
 	bufferSubData.SysMemPitch = 0;
 	bufferSubData.SysMemSlicePitch = 0;
 
 	result = device->CreateBuffer(&bufferDescription, &bufferSubData, &indexBuffer);
 
 	return result;
-}
-
-ID3D11VertexShader * SimpleTriangleMesh::GetVertexShader()
-{
-	return vertexShader;
-}
-
-ID3D11InputLayout * SimpleTriangleMesh::GetVertexLayout()
-{
-	return vertexLayout;
-}
-
-ID3D11PixelShader * SimpleTriangleMesh::GetPixelShader()
-{
-	return pixelShader;
 }

@@ -1,6 +1,7 @@
 #include "Game.h"
 
-SimpleTriangleMesh triangle;
+SimpleTriangle triangle;
+SimpleTriangleMesh mesh;
 
 Game::Game(HWND window)
 {
@@ -16,7 +17,12 @@ HRESULT Game::Initialize()
 	
 	if(result == S_OK)
 	{
-		result = triangle.Initialize(graphicsEngine.GetGraphicsDevice());
+		result = mesh.Initialize(graphicsEngine.GetGraphicsDevice());
+		if(result == S_OK)
+		{
+			triangle.SetMesh(&mesh);
+			gameObjects.push_back(&triangle);
+		}
 	}
 
 	return result;
@@ -25,7 +31,16 @@ HRESULT Game::Initialize()
 void Game::Run()
 {
 	graphicsEngine.ClearScene();
-	triangle.Render(graphicsEngine.GetGraphicsDeviceContext());
+
+	for(unsigned int x = 0; x < gameObjects.size(); x++)
+	{
+		graphicsEngine.GetGraphicsDeviceContext()->IASetInputLayout(mesh.GetVertexLayout());
+		graphicsEngine.GetGraphicsDeviceContext()->VSSetShader(mesh.GetVertexShader(), nullptr, 0);
+		graphicsEngine.GetGraphicsDeviceContext()->PSSetShader(mesh.GetPixelShader(), nullptr, 0);
+
+		gameObjects[x]->Render(graphicsEngine.GetGraphicsDeviceContext(), nullptr);
+	}
+
 	graphicsEngine.Render();
 }
 

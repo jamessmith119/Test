@@ -85,19 +85,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseMesh.cpp" />
+    <ClCompile Include="BaseObject.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CubeMesh.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameWindow.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="SimpleTriangle.cpp" />
     <ClCompile Include="SimpleTriangleMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseMesh.h" />
+    <ClInclude Include="BaseObject.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CubeMesh.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameWindow.h" />
+    <ClInclude Include="Global.h" />
     <ClInclude Include="GraphicsEngine.h" />
+    <ClInclude Include="SimpleTriangle.h" />
     <ClInclude Include="SimpleTriangleMesh.h" />
   </ItemGroup>
   <ItemGroup>

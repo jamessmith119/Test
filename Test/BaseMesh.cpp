@@ -19,6 +19,7 @@ BaseMesh::~BaseMesh()
 	}
 }
 
+//This is fine
 void BaseMesh::Render(ID3D11DeviceContext * context)
 {
 	UINT stride = sizeof(PNTVertex);
