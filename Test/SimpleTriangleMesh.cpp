@@ -5,15 +5,6 @@ WORD triangleIndices[] =
 	0, 1, 2
 };
 
-SimpleTriangleMesh::SimpleTriangleMesh()
-{
-}
-
-SimpleTriangleMesh::SimpleTriangleMesh(ID3D11Device * graphicsDevice)
-{
-	Initialize(graphicsDevice);
-}
-
 HRESULT SimpleTriangleMesh::Initialize(ID3D11Device * graphicsDevice)
 {
 	HRESULT result = S_OK;
@@ -73,6 +64,18 @@ HRESULT SimpleTriangleMesh::Initialize(ID3D11Device * graphicsDevice)
 		return E_FAIL;
 	}
 
+	if(vBlob)
+	{
+		vBlob->Release();
+		vBlob = 0;
+	}
+
+	if(pBlob)
+	{
+		pBlob->Release();
+		pBlob = 0;
+	}
+
 	return result;
 }
 
@@ -126,19 +129,4 @@ HRESULT SimpleTriangleMesh::CreateIndexBuffer()
 	result = device->CreateBuffer(&bufferDescription, &bufferSubData, &indexBuffer);
 
 	return result;
-}
-
-ID3D11VertexShader * SimpleTriangleMesh::GetVertexShader()
-{
-	return vertexShader;
-}
-
-ID3D11InputLayout * SimpleTriangleMesh::GetVertexLayout()
-{
-	return vertexLayout;
-}
-
-ID3D11PixelShader * SimpleTriangleMesh::GetPixelShader()
-{
-	return pixelShader;
 }

@@ -1,7 +1,9 @@
 #include "Game.h"
 
 SimpleTriangle triangle;
-SimpleTriangleMesh mesh;
+SimpleTriangleMesh triangleMesh;
+Cube cube;
+CubeMesh cubeMesh;
 
 Game::Game(HWND window)
 {
@@ -17,11 +19,26 @@ HRESULT Game::Initialize()
 	
 	if(result == S_OK)
 	{
-		result = mesh.Initialize(graphicsEngine.GetGraphicsDevice());
+		//result = triangleMesh.Initialize(graphicsEngine.GetGraphicsDevice());
+		result = cubeMesh.Initialize(graphicsEngine.GetGraphicsDevice());
 		if(result == S_OK)
 		{
-			triangle.SetMesh(&mesh);
-			gameObjects.push_back(&triangle);
+			//triangle.SetMesh(&mesh);
+			//gameObjects.push_back(triangle);
+
+			cube.SetMesh(&cubeMesh);
+			gameObjects.push_back(cube);
+
+			//XMVECTOR Eye = XMVectorSet( 0.0f, 1.0f, -5.0f, 0.0f );
+			//XMVECTOR At = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
+			//XMVECTOR Up = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
+			//g_View = XMMatrixLookAtLH( Eye, At, Up );
+
+			//// Initialize the projection matrix
+			//g_Projection = XMMatrixPerspectiveFovLH( XM_PIDIV2, width / (FLOAT)height, 0.01f, 100.0f );
+
+			camera.SetEye(DirectX::XMFLOAT3(0.0f, 1.0f, -5.0f));
+			//camera.SetProjection();
 		}
 	}
 
@@ -32,13 +49,22 @@ void Game::Run()
 {
 	graphicsEngine.ClearScene();
 
-	for(unsigned int x = 0; x < gameObjects.size(); x++)
+	for (std::vector<BaseObject>::iterator objectIterator = gameObjects.begin() ; objectIterator != gameObjects.end(); objectIterator++)
 	{
-		graphicsEngine.GetGraphicsDeviceContext()->IASetInputLayout(mesh.GetVertexLayout());
-		graphicsEngine.GetGraphicsDeviceContext()->VSSetShader(mesh.GetVertexShader(), nullptr, 0);
-		graphicsEngine.GetGraphicsDeviceContext()->PSSetShader(mesh.GetPixelShader(), nullptr, 0);
+		ID3D11Buffer * g = objectIterator->GetMesh()->GetConstantBuffer();
+		graphicsEngine.GetGraphicsDeviceContext()->IASetInputLayout(objectIterator->GetMesh()->GetVertexLayout());
+		graphicsEngine.GetGraphicsDeviceContext()->VSSetShader(objectIterator->GetMesh()->GetVertexShader(), nullptr, 0);
 
-		gameObjects[x]->Render(graphicsEngine.GetGraphicsDeviceContext(), nullptr);
+		ConstantBuffer cb;
+		cb.mWorld = DirectX::XMMatrixTranspose(DirectX::XMMatrixIdentity());
+		cb.mView = DirectX::XMMatrixTranspose(camera.View());
+		cb.mProjection = DirectX::XMMatrixTranspose(camera.Projection());
+		graphicsEngine.GetGraphicsDeviceContext()->UpdateSubresource(g, 0, nullptr, &cb, 0, 0);
+
+		graphicsEngine.GetGraphicsDeviceContext()->VSSetConstantBuffers(0, 1, &g);
+		graphicsEngine.GetGraphicsDeviceContext()->PSSetShader(objectIterator->GetMesh()->GetPixelShader(), nullptr, 0);
+
+		objectIterator->Render(graphicsEngine.GetGraphicsDeviceContext(), nullptr);
 	}
 
 	graphicsEngine.Render();

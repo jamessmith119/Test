@@ -2,25 +2,32 @@
 
 WORD cubeIndices[] =
 {
-	0, 1, 2
+	3,1,0,
+    2,1,3,
+
+    0,5,4,
+    1,5,0,
+
+    3,4,7,
+    0,4,3,
+
+    1,6,5,
+    2,6,1,
+
+    2,7,6,
+    3,7,2,
+
+    6,4,5,
+    7,4,6
 };
-
-CubeMesh::CubeMesh()
-{
-}
-
-CubeMesh::CubeMesh(ID3D11Device * graphicsDevice)
-{
-	Initialize(graphicsDevice);
-}
 
 HRESULT CubeMesh::Initialize(ID3D11Device * graphicsDevice)
 {
 	HRESULT result = S_OK;
 
 	device = graphicsDevice;
-	vertexCount = 3;
-	indexCount = sizeof(cubeIndices);	
+	vertexCount = 8;
+	indexCount = 36;	
 
 	ID3DBlob * vBlob = nullptr;
 	ID3DBlob * errorBlob = nullptr;
@@ -37,22 +44,22 @@ HRESULT CubeMesh::Initialize(ID3D11Device * graphicsDevice)
 		dwShaderFlags |= D3DCOMPILE_SKIP_OPTIMIZATION;
 	#endif
 
-	result = D3DCompileFromFile(L"SimpleTriangle.fx", nullptr, nullptr, "VS", "vs_4_0", dwShaderFlags, 0, &vBlob, &errorBlob);
+	result = D3DCompileFromFile(L"Cube.fx", nullptr, nullptr, "VS", "vs_4_0", dwShaderFlags, 0, &vBlob, &errorBlob);
 	if(FAILED(result = device->CreateVertexShader(vBlob->GetBufferPointer(), vBlob->GetBufferSize(), nullptr, &vertexShader)))
 	{
 		return E_FAIL;
 	}
 
-	UINT layout = ARRAYSIZE(PNTVertexLayout);
+	UINT layout = ARRAYSIZE(cubeLayout);
 
 	// Create the input layout
-	if(FAILED(result = device->CreateInputLayout(PNTVertexLayout, layout, vBlob->GetBufferPointer(), vBlob->GetBufferSize(), &vertexLayout)))
+	if(FAILED(result = device->CreateInputLayout(cubeLayout, layout, vBlob->GetBufferPointer(), vBlob->GetBufferSize(), &vertexLayout)))
 	{
 		return E_FAIL;
 	}
 
 	ID3DBlob * pBlob = nullptr;
-	if(FAILED(result = D3DCompileFromFile(L"SimpleTriangle.fx", nullptr, nullptr, "PS", "ps_4_0", dwShaderFlags, 0, &pBlob, &errorBlob)))
+	if(FAILED(result = D3DCompileFromFile(L"Cube.fx", nullptr, nullptr, "PS", "ps_4_0", dwShaderFlags, 0, &pBlob, &errorBlob)))
 	{
 		return E_FAIL;
 	}
@@ -73,18 +80,20 @@ HRESULT CubeMesh::Initialize(ID3D11Device * graphicsDevice)
 		return E_FAIL;
 	}
 
+	D3D11_BUFFER_DESC bufferDescription;
+	ZeroMemory(&bufferDescription, sizeof(bufferDescription));
+
+	// Create the constant buffer
+	bufferDescription.Usage = D3D11_USAGE_DEFAULT;
+	bufferDescription.ByteWidth = sizeof(ConstantBuffer);
+	bufferDescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bufferDescription.CPUAccessFlags = 0;
+    if(FAILED(device->CreateBuffer(&bufferDescription, nullptr, &constantBuffer)))
+	{
+		return E_FAIL;
+	}
+
 	return result;
-}
-
-void CubeMesh::Render(ID3D11DeviceContext * context)
-{
-	context->IASetInputLayout(vertexLayout);
-
-	//Shaders should be set on Material object.
-	context->VSSetShader(vertexShader, nullptr, 0);
-	context->PSSetShader(pixelShader, nullptr, 0);
-
-	BaseMesh::Render(context);
 }
 
 HRESULT CubeMesh::CreateVertexBuffer()
@@ -98,13 +107,13 @@ HRESULT CubeMesh::CreateVertexBuffer()
 
 	//Fill in the vertex buffer description.
 	bufferDescription.Usage = D3D11_USAGE_DEFAULT;
-	bufferDescription.ByteWidth = sizeof(PNTVertex) * vertexCount;
+	bufferDescription.ByteWidth = sizeof(CubeVertex) * vertexCount;
 	bufferDescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferDescription.CPUAccessFlags = 0;
 	bufferDescription.MiscFlags = 0;
 
 	//Fill in the vertex subresource data.
-	bufferSubData.pSysMem = vertices;
+	bufferSubData.pSysMem = cubeVertices;
 	bufferSubData.SysMemPitch = 0;
 	bufferSubData.SysMemSlicePitch = 0;
 
