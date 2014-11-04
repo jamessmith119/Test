@@ -80,3 +80,6 @@ Test/Release/vc110.pdb
 Test.sdf
 Test.sdf
 *.suo
+*.suo
+*.obj
+*.obj

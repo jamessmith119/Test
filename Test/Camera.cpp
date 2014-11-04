@@ -4,6 +4,7 @@ Camera::Camera()
 {
 	SetView(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
 	SetProjection(DirectX::XM_PI / 4, 1.0f, 1.0f, 1000.0f);
+	//SetProjection(1.570796327f, 800/(FLOAT)600, 0.01f, 1000.0f);
 }
 
 void Camera::SetView(DirectX::XMFLOAT3 eye, DirectX::XMFLOAT3 lookAt, DirectX::XMFLOAT3 up)

@@ -16,6 +16,7 @@ class BaseMesh
 		ID3D11PixelShader * pixelShader;
 		int vertexCount;
 		int indexCount;
+		int vertexBufferStride;
 
 	public:
 		BaseMesh();

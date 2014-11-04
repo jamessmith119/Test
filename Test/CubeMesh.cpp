@@ -117,6 +117,9 @@ HRESULT CubeMesh::CreateVertexBuffer()
 	bufferSubData.SysMemPitch = 0;
 	bufferSubData.SysMemSlicePitch = 0;
 
+	//Set the size of the stride.
+	vertexBufferStride = sizeof(CubeVertex);
+
 	result = device->CreateBuffer(&bufferDescription, &bufferSubData, &vertexBuffer);
 
 	return result;
