@@ -56,3 +56,48 @@ void Camera::SetLookDirection(DirectX::XMFLOAT3 direction)
 
 	SetView(eyeDirection, lookAt, upDirection);
 }
+
+DirectX::XMMATRIX Camera::View()
+{
+    return DirectX::XMLoadFloat4x4(&viewMatrix);
+}
+
+DirectX::XMMATRIX Camera::Projection()
+{
+    return DirectX::XMLoadFloat4x4(&projectionMatrix);
+}
+
+DirectX::XMMATRIX Camera::World()
+{
+    return DirectX::XMLoadFloat4x4(&inverseViewMatrix);
+}
+
+DirectX::XMFLOAT3 Camera::Eye()
+{
+    return eyeDirection;
+}
+
+DirectX::XMFLOAT3 Camera::LookAt()
+{
+    return lookAtDirection;
+}
+
+float Camera::NearClipPlane()
+{
+    return cameraNearPlane;
+}
+
+float Camera::FarClipPlane()
+{
+    return cameraFarPlane;
+}
+
+float Camera::Pitch()
+{
+    return cameraPitchAngle;
+}
+
+float Camera::Yaw()
+{
+    return cameraYawAngle;
+}

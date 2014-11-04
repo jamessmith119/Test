@@ -25,6 +25,15 @@ class Camera
 		void SetProjection(float, float, float, float);
 		void SetEye(DirectX::XMFLOAT3);
 		void SetLookDirection(DirectX::XMFLOAT3);
+		DirectX::XMMATRIX View();
+		DirectX::XMMATRIX Projection();
+		DirectX::XMMATRIX World();
+		DirectX::XMFLOAT3 Eye();
+		DirectX::XMFLOAT3 LookAt();
+		float NearClipPlane();
+		float FarClipPlane();
+		float Pitch();
+		float Yaw();
 };
 
 #endif
