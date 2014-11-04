@@ -79,3 +79,4 @@ Test/Release/Test.log
 Test/Release/vc110.pdb
 Test.sdf
 Test.sdf
+*.suo
